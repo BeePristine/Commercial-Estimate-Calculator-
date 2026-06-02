@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bee Pristine — Commercial Estimate Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#f4f6f9;min-height:100vh;padding:2rem 1rem;color:#0D1B2A}
+.container{max-width:780px;margin:0 auto}
+
+/* Header */
+.header{background:#0D1B2A;border-radius:16px;padding:2rem;margin-bottom:1.5rem;text-align:center}
+.header-label{font-size:11px;font-weight:500;color:#A0B4C8;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.header-title{font-size:28px;font-weight:600;color:#fff;margin-bottom:4px}
+.header-sub{font-size:14px;color:#A0B4C8}
+
+/* Form card */
+.form-card{background:#fff;border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;border:0.5px solid #E0E4EA;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+label{font-size:12px;font-weight:500;color:#6B7280;text-transform:uppercase;letter-spacing:.06em}
+input[type=number],select{width:100%;padding:10px 14px;border:0.5px solid #D1D5DB;border-radius:10px;font-family:'Poppins',sans-serif;font-size:14px;color:#0D1B2A;background:#fff;outline:none;transition:border-color .15s}
+input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px rgba(42,157,143,0.12)}
+
+/* Result grid */
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.25rem}
+.metric{background:#fff;border:0.5px solid #E0E4EA;border-radius:12px;padding:1rem;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.metric-label{font-size:11px;color:#6B7280;font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.metric-val{font-size:24px;font-weight:600;color:#0D1B2A;line-height:1.1}
+.metric-val.teal{color:#2A9D8F}
+.metric-val.amber{color:#BA7517}
+.metric-note{font-size:11px;color:#9CA3AF;margin-top:4px}
+
+/* Detail card */
+.detail-card{background:#fff;border:0.5px solid #E0E4EA;border-radius:16px;padding:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.detail-title{font-size:14px;font-weight:600;color:#0D1B2A;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid #E0E4EA}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #F3F4F6;font-size:13px}
+.detail-row:last-of-type{border-bottom:none}
+.dl{color:#6B7280}
+.dv{font-weight:500;color:#0D1B2A}
+.dv.green{color:#0F6E56}
+.dv.amber{color:#BA7517}
+.dv.red{color:#A32D2D}
+.divider{height:0.5px;background:#E0E4EA;margin:10px 0}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:100px}
+.badge-green{background:#E1F5EE;color:#0F6E56}
+.badge-red{background:#FDECEA;color:#A32D2D}
+.badge-teal{background:#D4EEEC;color:#0F6E56}
+
+/* Placeholder */
+.placeholder{text-align:center;padding:3rem 1rem;color:#9CA3AF;font-size:14px;background:#fff;border:0.5px solid #E0E4EA;border-radius:16px}
+.placeholder i{font-size:40px;display:block;margin-bottom:12px;color:#D1D5DB}
+
+/* Footer */
+.footer{text-align:center;margin-top:1.5rem;font-size:12px;color:#9CA3AF}
+.footer strong{color:#6B7280}
+
+@media(max-width:520px){
+  .result-grid{grid-template-columns:1fr 1fr}
+  .result-grid .metric:last-child{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-label">Bee Pristine</div>
+    <div class="header-title">Commercial Estimate Calculator</div>
+    <div class="header-sub">Square footage pricing · All space types · Live profit breakdown</div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="field">
+        <label for="sqft">Square footage</label>
+        <input type="number" id="sqft" placeholder="e.g. 1500" min="0" max="99999" step="50" />
+      </div>
+      <div class="field">
+        <label for="space">Space type</label>
+        <select id="space">
+          <option value="">Select space type</option>
+          <option value="office">Standard Office</option>
+          <option value="medical">Medical Office</option>
+          <option value="dental">Dental Office</option>
+          <option value="retail">Retail Store</option>
+          <option value="restaurant">Restaurant / Café</option>
+          <option value="gym">Gym / Fitness Center</option>
+          <option value="event">Event Venue</option>
+          <option value="warehouse">Warehouse</option>
+          <option value="school_lab">School / University Lab ⚠️</option>
+          <option value="med_lab">Medical / Research Lab ⚠️</option>
+          <option value="chem_lab">Industrial / Chemical Lab ⚠️⚠️</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="service">Service type</label>
+        <select id="service">
+          <option value="regular">Standard Regular Clean</option>
+          <option value="deep">Deep Clean</option>
+          <option value="quarterly">Quarterly Deep Clean</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="freq">Booking frequency</label>
+        <select id="freq">
+          <option value="0">One-time / As needed</option>
+          <option value="10">Monthly — 10% off</option>
+          <option value="20">Weekly — 20% off</option>
+          <option value="22">2x per week — 22% off</option>
+          <option value="25">3x per week — 25% off</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="output">
+    <div class="placeholder">
+      <span style="font-size:36px;display:block;margin-bottom:12px">🐝</span>
+      Enter square footage and select a space type to generate your estimate
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>Bee Pristine</strong> &nbsp;·&nbsp; 832-843-1948 &nbsp;·&nbsp; hello@beepristine.com &nbsp;·&nbsp; Houston, TX
+    <br><br>Rates: Standard $0.15 · Deep $0.25 · Quarterly $0.22 per sq ft &nbsp;·&nbsp; Labor avg $26.50/hr
+  </div>
+
+</div>
+<script>
+const RATES={office:{regular:.15,deep:.25,quarterly:.22,min:{regular:150,deep:250,quarterly:220},freq:"Weekly / Biweekly",cert:false},medical:{regular:.25,deep:.40,quarterly:.35,min:{regular:200,deep:350,quarterly:300},freq:"Daily / Weekly",cert:"OSHA 10 + Bloodborne Pathogen required"},dental:{regular:.27,deep:.44,quarterly:.38,min:{regular:200,deep:350,quarterly:300},freq:"Daily / Weekly",cert:false},retail:{regular:.15,deep:.25,quarterly:.22,min:{regular:150,deep:250,quarterly:220},freq:"Daily / Weekly",cert:false},restaurant:{regular:.20,deep:.32,quarterly:.28,min:{regular:175,deep:300,quarterly:260},freq:"Daily",cert:false},gym:{regular:.18,deep:.28,quarterly:.25,min:{regular:175,deep:275,quarterly:240},freq:"Daily / Weekly",cert:false},event:{regular:.20,deep:.32,quarterly:.28,min:{regular:200,deep:300,quarterly:260},freq:"Per event",cert:false},warehouse:{regular:.09,deep:.14,quarterly:.12,min:{regular:150,deep:200,quarterly:180},freq:"Weekly / Monthly",cert:false},school_lab:{regular:.28,deep:.45,quarterly:.38,min:{regular:250,deep:400,quarterly:340},freq:"Weekly",cert:"OSHA 10 required"},med_lab:{regular:.38,deep:.60,quarterly:.52,min:{regular:350,deep:550,quarterly:470},freq:"Daily / Weekly",cert:"OSHA 10 + Bloodborne Pathogen required"},chem_lab:{regular:.50,deep:.75,quarterly:.65,min:{regular:450,deep:700,quarterly:600},freq:"Weekly",cert:"OSHA 10 + HAZMAT Awareness required"}};
+const TIME={regular:{1:2.5,2:1.5,3:1.0},deep:{1:4.5,2:2.8,3:1.9},quarterly:{1:3.5,2:2.2,3:1.5}};
+
+function staff(sq){return sq<1500?1:sq<3000?2:3}
+function fmtTime(h){const hr=Math.floor(h),mn=Math.round((h-hr)*60);if(!mn)return hr+"h";if(!hr)return mn+"min";return hr+"h "+mn+"min"}
+function fmt(n){return "$"+Math.round(n).toLocaleString()}
+
+function calc(){
+  const sq=parseFloat(document.getElementById('sqft').value);
+  const sp=document.getElementById('space').value;
+  const sv=document.getElementById('service').value;
+  const freqDisc=parseInt(document.getElementById('freq').value)||0;
+  const freqLabel={0:"One-time / As needed",10:"Monthly (10% off)",20:"Weekly (20% off)",22:"2x per week (22% off)",25:"3x per week (25% off)"}[freqDisc];
+  const out=document.getElementById('output');
+  if(!sq||!sp||sq<=0){out.innerHTML='<div class="placeholder"><span style="font-size:36px;display:block;margin-bottom:12px">🐝</span>Enter square footage and select a space type to generate your estimate</div>';return;}
+  const r=RATES[sp];
+  const rate=r[sv];
+  const minC=r.min[sv];
+  const s=staff(sq);
+  const raw=sq*rate;
+  const basePrice=Math.max(raw,minC);
+  const isMin=raw<minC;
+  const discountAmt=freqDisc>0?Math.round(basePrice*(freqDisc/100)):0;
+  const price=basePrice-discountAmt;
+  const hrs=(sq/1000)*TIME[sv][s];
+  const laborCost=s*26.5*hrs;
+  const supplies=Math.round(sq*0.003+10);
+  const totalCost=laborCost+supplies;
+  const profit=price-totalCost;
+  const margin=Math.round((profit/price)*100);
+  const svLabel={regular:"Standard Regular",deep:"Deep Clean",quarterly:"Quarterly Deep"}[sv];
+  const spLabel=document.getElementById('space').options[document.getElementById('space').selectedIndex].text;
+  const staffLabel=s===1?"1 cleaner":s+" cleaners";
+  out.innerHTML=`
+    <div class="result-grid">
+      <div class="metric"><div class="metric-label">Estimated price</div><div class="metric-val teal">${fmt(price)}</div>${freqDisc>0?`<div class="metric-note">${freqDisc}% discount applied</div>`:''} ${isMin?'<div class="metric-note">Min charge applied</div>':''}</div>
+      <div class="metric"><div class="metric-label">Estimated time</div><div class="metric-val">${fmtTime(hrs)}</div><div class="metric-note">${staffLabel}</div></div>
+      <div class="metric"><div class="metric-label">Your profit</div><div class="metric-val ${margin>=40?'teal':'amber'}">${fmt(profit)}</div><div class="metric-note">${margin}% margin</div></div>
+    </div>
+    <div class="detail-card">
+      <div class="detail-title">${svLabel} — ${sq.toLocaleString()} sq ft &nbsp;·&nbsp; ${spLabel}</div>
+      <div class="detail-row"><span class="dl">Rate per sq ft</span><span class="dv">$${rate.toFixed(2)}/sq ft</span></div>
+      <div class="detail-row"><span class="dl">Base price (${sq.toLocaleString()} × $${rate.toFixed(2)})</span><span class="dv">${fmt(raw)}</span></div>
+      ${isMin?`<div class="detail-row"><span class="dl">Minimum charge applied</span><span class="dv amber">${fmt(minC)}</span></div>`:''}
+      <div class="detail-row"><span class="dl">Full price</span><span class="dv">${fmt(basePrice)}</span></div>
+      ${freqDisc>0?`<div class="detail-row"><span class="dl">Frequency discount (${freqLabel})</span><span class="dv" style="color:#0F6E56">− ${fmt(discountAmt)}</span></div>`:''}
+      <div class="detail-row"><span class="dl">Final price</span><span class="dv green" style="font-size:15px">${fmt(price)}</span></div>
+      <div class="divider"></div>
+      <div class="detail-row"><span class="dl">Booking frequency</span><span class="dv">${freqLabel}</span></div>
+      <div class="detail-row"><span class="dl">Staff assigned</span><span class="dv">${staffLabel} · $${(s*26.5).toFixed(2)}/hr combined</span></div>
+      <div class="detail-row"><span class="dl">Estimated time</span><span class="dv">${fmtTime(hrs)}</span></div>
+      <div class="detail-row"><span class="dl">Labor cost</span><span class="dv">${fmt(laborCost)}</span></div>
+      <div class="detail-row"><span class="dl">Supplies estimate</span><span class="dv">${fmt(supplies)}</span></div>
+      <div class="detail-row"><span class="dl">Total cost to you</span><span class="dv">${fmt(totalCost)}</span></div>
+      <div class="detail-row"><span class="dl">Your profit</span><span class="dv green">${fmt(profit)} (${margin}% margin)</span></div>
+      <div class="detail-row"><span class="dl">Recommended frequency</span><span class="dv">${r.freq}</span></div>
+      ${r.cert?`<div class="detail-row"><span class="dl">Certification required</span><span class="dv red">${r.cert}</span></div>`:''}
+      <div class="badges">
+        <span class="badge badge-teal">${s===1?"1 cleaner · under 1,500 sq ft":s===2?"2 cleaners · 1,500–2,999 sq ft":"3 cleaners · 3,000+ sq ft"}</span>
+        ${freqDisc>0?`<span class="badge" style="background:#E1F5EE;color:#0F6E56">${freqDisc}% frequency discount</span>`:''}
+        ${r.cert?'<span class="badge badge-red">Certification required</span>':''}
+        ${isMin?'<span class="badge" style="background:#FDF6E3;color:#854F0B">Minimum charge applied</span>':''}
+      </div>
+    </div>`;
+}
+document.getElementById('sqft').addEventListener('input',calc);
+document.getElementById('space').addEventListener('change',calc);
+document.getElementById('service').addEventListener('change',calc);
+document.getElementById('freq').addEventListener('change',calc);
+</script>
+</body>
+</html>
