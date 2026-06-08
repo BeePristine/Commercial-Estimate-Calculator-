@@ -51,9 +51,26 @@ input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px 
 .badge-red{background:#FDECEA;color:#A32D2D}
 .badge-teal{background:#D4EEEC;color:#0F6E56}
 
+/* Contract card — new */
+.contract-card{background:#fff;border:0.5px solid #E0E4EA;border-radius:16px;padding:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-top:1.25rem}
+.contract-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid #E0E4EA}
+.contract-header-title{font-size:14px;font-weight:600;color:#0D1B2A}
+.contract-header-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:100px;background:#D4EEEC;color:#0F6E56}
+.contract-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.contract-metric{background:#f4f6f9;border-radius:10px;padding:.875rem 1rem;text-align:center}
+.contract-metric-label{font-size:11px;color:#6B7280;font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.contract-metric-val{font-size:20px;font-weight:600;color:#0D1B2A;line-height:1.1}
+.contract-metric-val.teal{color:#2A9D8F}
+.contract-metric-val.green{color:#0F6E56}
+.contract-metric-sub{font-size:11px;color:#9CA3AF;margin-top:3px}
+.contract-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #F3F4F6;font-size:13px}
+.contract-row:last-of-type{border-bottom:none}
+.contract-row.highlight{background:#f0faf8;margin:0 -1.25rem;padding:10px 1.25rem;border-radius:0 0 12px 12px;border-bottom:none}
+.contract-row.highlight .dl{color:#0D1B2A;font-weight:500}
+.contract-row.highlight .dv{color:#0F6E56;font-size:15px}
+
 /* Placeholder */
 .placeholder{text-align:center;padding:3rem 1rem;color:#9CA3AF;font-size:14px;background:#fff;border:0.5px solid #E0E4EA;border-radius:16px}
-.placeholder i{font-size:40px;display:block;margin-bottom:12px;color:#D1D5DB}
 
 /* Footer */
 .footer{text-align:center;margin-top:1.5rem;font-size:12px;color:#9CA3AF}
@@ -62,6 +79,8 @@ input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px 
 @media(max-width:520px){
   .result-grid{grid-template-columns:1fr 1fr}
   .result-grid .metric:last-child{grid-column:1/-1}
+  .contract-grid{grid-template-columns:1fr 1fr}
+  .contract-grid .contract-metric:last-child{grid-column:1/-1}
 }
 </style>
 </head>
@@ -135,9 +154,54 @@ input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px 
 const RATES={office:{regular:.15,deep:.25,quarterly:.22,min:{regular:150,deep:250,quarterly:220},freq:"Weekly / Biweekly",cert:false},medical:{regular:.25,deep:.40,quarterly:.35,min:{regular:200,deep:350,quarterly:300},freq:"Daily / Weekly",cert:"OSHA 10 + Bloodborne Pathogen required"},dental:{regular:.27,deep:.44,quarterly:.38,min:{regular:200,deep:350,quarterly:300},freq:"Daily / Weekly",cert:false},retail:{regular:.15,deep:.25,quarterly:.22,min:{regular:150,deep:250,quarterly:220},freq:"Daily / Weekly",cert:false},restaurant:{regular:.20,deep:.32,quarterly:.28,min:{regular:175,deep:300,quarterly:260},freq:"Daily",cert:false},gym:{regular:.18,deep:.28,quarterly:.25,min:{regular:175,deep:275,quarterly:240},freq:"Daily / Weekly",cert:false},event:{regular:.20,deep:.32,quarterly:.28,min:{regular:200,deep:300,quarterly:260},freq:"Per event",cert:false},warehouse:{regular:.13,deep:.21,quarterly:.18,min:{regular:150,deep:200,quarterly:180},freq:"Weekly / Monthly",cert:false},school_lab:{regular:.28,deep:.45,quarterly:.38,min:{regular:250,deep:400,quarterly:340},freq:"Weekly",cert:"OSHA 10 required"},med_lab:{regular:.38,deep:.60,quarterly:.52,min:{regular:350,deep:550,quarterly:470},freq:"Daily / Weekly",cert:"OSHA 10 + Bloodborne Pathogen required"},chem_lab:{regular:.50,deep:.75,quarterly:.65,min:{regular:450,deep:700,quarterly:600},freq:"Weekly",cert:"OSHA 10 + HAZMAT Awareness required"}};
 const TIME={regular:{1:2.5,2:1.5,3:1.0},deep:{1:4.5,2:2.8,3:1.9},quarterly:{1:3.5,2:2.2,3:1.5}};
 
+// visits per month for each frequency discount value
+const VISITS_PER_MONTH={10:1,20:4,22:8,25:12};
+const FREQ_SHORT={10:"monthly",20:"weekly",22:"2x/week",25:"3x/week"};
+
 function staff(sq){return sq<1500?1:sq<3000?2:3}
 function fmtTime(h){const hr=Math.floor(h),mn=Math.round((h-hr)*60);if(!mn)return hr+"h";if(!hr)return mn+"min";return hr+"h "+mn+"min"}
 function fmt(n){return "$"+Math.round(n).toLocaleString()}
+
+function contractBlock(price, profit, freqDisc) {
+  if (freqDisc === 0) return '';
+  const visits = VISITS_PER_MONTH[freqDisc];
+  const freqShort = FREQ_SHORT[freqDisc];
+  const monthlyRevenue = price * visits;
+  const monthlyProfit = profit * visits;
+  const annualRevenue = monthlyRevenue * 12;
+  const annualProfit = monthlyProfit * 12;
+  const visitsLabel = visits === 1 ? '1 visit/month' : visits + ' visits/month';
+
+  return `
+    <div class="contract-card">
+      <div class="contract-header">
+        <div class="contract-header-title">Contract value — ${freqShort}</div>
+        <div class="contract-header-badge">${visitsLabel}</div>
+      </div>
+      <div class="contract-grid">
+        <div class="contract-metric">
+          <div class="contract-metric-label">Per visit</div>
+          <div class="contract-metric-val teal">${fmt(price)}</div>
+          <div class="contract-metric-sub">${fmt(profit)} profit</div>
+        </div>
+        <div class="contract-metric">
+          <div class="contract-metric-label">Monthly</div>
+          <div class="contract-metric-val teal">${fmt(monthlyRevenue)}</div>
+          <div class="contract-metric-sub">${fmt(monthlyProfit)} profit</div>
+        </div>
+        <div class="contract-metric">
+          <div class="contract-metric-label">Annual</div>
+          <div class="contract-metric-val green">${fmt(annualRevenue)}</div>
+          <div class="contract-metric-sub">${fmt(annualProfit)} profit</div>
+        </div>
+      </div>
+      <div class="contract-row"><span class="dl">Visits per month</span><span class="dv">${visits}</span></div>
+      <div class="contract-row"><span class="dl">Monthly revenue</span><span class="dv green">${fmt(monthlyRevenue)}</span></div>
+      <div class="contract-row"><span class="dl">Monthly profit</span><span class="dv green">${fmt(monthlyProfit)}</span></div>
+      <div class="contract-row"><span class="dl">Annual revenue</span><span class="dv green">${fmt(annualRevenue)}</span></div>
+      <div class="contract-row highlight"><span class="dl">Annual profit</span><span class="dv">${fmt(annualProfit)}</span></div>
+    </div>`;
+}
 
 function calc(){
   const sq=parseFloat(document.getElementById('sqft').value);
@@ -195,7 +259,8 @@ function calc(){
         ${r.cert?'<span class="badge badge-red">Certification required</span>':''}
         ${isMin?'<span class="badge" style="background:#FDF6E3;color:#854F0B">Minimum charge applied</span>':''}
       </div>
-    </div>`;
+    </div>
+    ${contractBlock(price, profit, freqDisc)}`;
 }
 document.getElementById('sqft').addEventListener('input',calc);
 document.getElementById('space').addEventListener('change',calc);
