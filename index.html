@@ -10,22 +10,16 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Poppins',sans-serif;background:#f4f6f9;min-height:100vh;padding:2rem 1rem;color:#0D1B2A}
 .container{max-width:780px;margin:0 auto}
-
-/* Header */
 .header{background:#0D1B2A;border-radius:16px;padding:2rem;margin-bottom:1.5rem;text-align:center}
 .header-label{font-size:11px;font-weight:500;color:#A0B4C8;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
 .header-title{font-size:28px;font-weight:600;color:#fff;margin-bottom:4px}
 .header-sub{font-size:14px;color:#A0B4C8}
-
-/* Form card */
 .form-card{background:#fff;border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;border:0.5px solid #E0E4EA;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
 label{font-size:12px;font-weight:500;color:#6B7280;text-transform:uppercase;letter-spacing:.06em}
-input[type=number],select{width:100%;padding:10px 14px;border:0.5px solid #D1D5DB;border-radius:10px;font-family:'Poppins',sans-serif;font-size:14px;color:#0D1B2A;background:#fff;outline:none;transition:border-color .15s}
-input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px rgba(42,157,143,0.12)}
-
-/* Result grid */
+input[type=number],select,input[type=date]{width:100%;padding:10px 14px;border:0.5px solid #D1D5DB;border-radius:10px;font-family:'Poppins',sans-serif;font-size:14px;color:#0D1B2A;background:#fff;outline:none;transition:border-color .15s}
+input[type=number]:focus,select:focus,input[type=date]:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px rgba(42,157,143,0.12)}
 .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.25rem}
 .metric{background:#fff;border:0.5px solid #E0E4EA;border-radius:12px;padding:1rem;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
 .metric-label{font-size:11px;color:#6B7280;font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
@@ -33,8 +27,6 @@ input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px 
 .metric-val.teal{color:#2A9D8F}
 .metric-val.amber{color:#BA7517}
 .metric-note{font-size:11px;color:#9CA3AF;margin-top:4px}
-
-/* Detail card */
 .detail-card{background:#fff;border:0.5px solid #E0E4EA;border-radius:16px;padding:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
 .detail-title{font-size:14px;font-weight:600;color:#0D1B2A;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid #E0E4EA}
 .detail-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #F3F4F6;font-size:13px}
@@ -51,11 +43,17 @@ input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px 
 .badge-red{background:#FDECEA;color:#A32D2D}
 .badge-teal{background:#D4EEEC;color:#0F6E56}
 
-/* Contract card — new */
+/* Contract card */
 .contract-card{background:#fff;border:0.5px solid #E0E4EA;border-radius:16px;padding:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-top:1.25rem}
-.contract-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid #E0E4EA}
+.contract-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:0.5px solid #E0E4EA}
 .contract-header-title{font-size:14px;font-weight:600;color:#0D1B2A}
 .contract-header-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:100px;background:#D4EEEC;color:#0F6E56}
+.date-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.date-field{display:flex;flex-direction:column;gap:5px}
+.date-label{font-size:11px;font-weight:500;color:#6B7280;text-transform:uppercase;letter-spacing:.06em}
+.duration-bar{background:#f4f6f9;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.duration-main{font-size:13px;font-weight:600;color:#0D1B2A}
+.duration-sub{font-size:12px;color:#6B7280}
 .contract-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 .contract-metric{background:#f4f6f9;border-radius:10px;padding:.875rem 1rem;text-align:center}
 .contract-metric-label{font-size:11px;color:#6B7280;font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
@@ -69,10 +67,7 @@ input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px 
 .contract-row.highlight .dl{color:#0D1B2A;font-weight:500}
 .contract-row.highlight .dv{color:#0F6E56;font-size:15px}
 
-/* Placeholder */
 .placeholder{text-align:center;padding:3rem 1rem;color:#9CA3AF;font-size:14px;background:#fff;border:0.5px solid #E0E4EA;border-radius:16px}
-
-/* Footer */
 .footer{text-align:center;margin-top:1.5rem;font-size:12px;color:#9CA3AF}
 .footer strong{color:#6B7280}
 
@@ -81,6 +76,7 @@ input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px 
   .result-grid .metric:last-child{grid-column:1/-1}
   .contract-grid{grid-template-columns:1fr 1fr}
   .contract-grid .contract-metric:last-child{grid-column:1/-1}
+  .date-row{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -153,8 +149,6 @@ input[type=number]:focus,select:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px 
 <script>
 const RATES={office:{regular:.15,deep:.25,quarterly:.22,min:{regular:150,deep:250,quarterly:220},freq:"Weekly / Biweekly",cert:false},medical:{regular:.25,deep:.40,quarterly:.35,min:{regular:200,deep:350,quarterly:300},freq:"Daily / Weekly",cert:"OSHA 10 + Bloodborne Pathogen required"},dental:{regular:.27,deep:.44,quarterly:.38,min:{regular:200,deep:350,quarterly:300},freq:"Daily / Weekly",cert:false},retail:{regular:.15,deep:.25,quarterly:.22,min:{regular:150,deep:250,quarterly:220},freq:"Daily / Weekly",cert:false},restaurant:{regular:.20,deep:.32,quarterly:.28,min:{regular:175,deep:300,quarterly:260},freq:"Daily",cert:false},gym:{regular:.18,deep:.28,quarterly:.25,min:{regular:175,deep:275,quarterly:240},freq:"Daily / Weekly",cert:false},event:{regular:.20,deep:.32,quarterly:.28,min:{regular:200,deep:300,quarterly:260},freq:"Per event",cert:false},warehouse:{regular:.13,deep:.21,quarterly:.18,min:{regular:150,deep:200,quarterly:180},freq:"Weekly / Monthly",cert:false},school_lab:{regular:.28,deep:.45,quarterly:.38,min:{regular:250,deep:400,quarterly:340},freq:"Weekly",cert:"OSHA 10 required"},med_lab:{regular:.38,deep:.60,quarterly:.52,min:{regular:350,deep:550,quarterly:470},freq:"Daily / Weekly",cert:"OSHA 10 + Bloodborne Pathogen required"},chem_lab:{regular:.50,deep:.75,quarterly:.65,min:{regular:450,deep:700,quarterly:600},freq:"Weekly",cert:"OSHA 10 + HAZMAT Awareness required"}};
 const TIME={regular:{1:2.5,2:1.5,3:1.0},deep:{1:4.5,2:2.8,3:1.9},quarterly:{1:3.5,2:2.2,3:1.5}};
-
-// visits per month for each frequency discount value
 const VISITS_PER_MONTH={10:1,20:4,22:8,25:12};
 const FREQ_SHORT={10:"monthly",20:"weekly",22:"2x/week",25:"3x/week"};
 
@@ -162,22 +156,97 @@ function staff(sq){return sq<1500?1:sq<3000?2:3}
 function fmtTime(h){const hr=Math.floor(h),mn=Math.round((h-hr)*60);if(!mn)return hr+"h";if(!hr)return mn+"min";return hr+"h "+mn+"min"}
 function fmt(n){return "$"+Math.round(n).toLocaleString()}
 
-function contractBlock(price, profit, freqDisc) {
-  if (freqDisc === 0) return '';
-  const visits = VISITS_PER_MONTH[freqDisc];
-  const freqShort = FREQ_SHORT[freqDisc];
-  const monthlyRevenue = price * visits;
-  const monthlyProfit = profit * visits;
-  const annualRevenue = monthlyRevenue * 12;
-  const annualProfit = monthlyProfit * 12;
-  const visitsLabel = visits === 1 ? '1 visit/month' : visits + ' visits/month';
+// set today as default start date, +12 months as default end date
+function initDates(){
+  const today=new Date();
+  const end=new Date(today);
+  end.setFullYear(end.getFullYear()+1);
+  const toISO=d=>d.toISOString().split('T')[0];
+  const s=document.getElementById('cstart');
+  const e=document.getElementById('cend');
+  if(s&&!s.value) s.value=toISO(today);
+  if(e&&!e.value) e.value=toISO(end);
+}
 
-  return `
-    <div class="contract-card">
-      <div class="contract-header">
-        <div class="contract-header-title">Contract value — ${freqShort}</div>
-        <div class="contract-header-badge">${visitsLabel}</div>
+function getDuration(){
+  const s=document.getElementById('cstart');
+  const e=document.getElementById('cend');
+  if(!s||!e||!s.value||!e.value) return null;
+  const start=new Date(s.value);
+  const end=new Date(e.value);
+  if(end<=start) return null;
+  const diffMs=end-start;
+  const diffDays=Math.round(diffMs/(1000*60*60*24));
+  const diffMonths=(end.getFullYear()-start.getFullYear())*12+(end.getMonth()-start.getMonth())+(end.getDate()>=start.getDate()?0:-1);
+  const diffWeeks=Math.floor(diffDays/7);
+  const remDays=diffDays%7;
+  // human readable
+  const yrs=Math.floor(diffMonths/12);
+  const mos=diffMonths%12;
+  let label='';
+  if(yrs>0) label+=yrs+(yrs===1?' year':' years');
+  if(yrs>0&&mos>0) label+=' ';
+  if(mos>0) label+=mos+(mos===1?' month':' months');
+  if(!label) label=diffDays+' days';
+  return {days:diffDays,months:diffMonths,weeks:diffWeeks,remDays,label,start,end};
+}
+
+function contractBlock(price,profit,freqDisc){
+  if(freqDisc===0) return '';
+  const visits=VISITS_PER_MONTH[freqDisc];
+  const freqShort=FREQ_SHORT[freqDisc];
+  const monthlyRevenue=price*visits;
+  const monthlyProfit=profit*visits;
+  const annualRevenue=monthlyRevenue*12;
+  const annualProfit=monthlyProfit*12;
+  const visitsLabel=visits===1?'1 visit/month':visits+' visits/month';
+
+  // build date section — always shown, dates pre-filled
+  const todayISO=new Date().toISOString().split('T')[0];
+  const endDefault=new Date();
+  endDefault.setFullYear(endDefault.getFullYear()+1);
+  const endISO=endDefault.toISOString().split('T')[0];
+
+  const dur=getDuration();
+  let durationBar='';
+  let customSection='';
+
+  if(dur){
+    const totalVisits=Math.round((dur.months*visits)+(dur.remDays/30*visits));
+    const customRevenue=price*totalVisits;
+    const customProfit=profit*totalVisits;
+    durationBar=`
+      <div class="duration-bar">
+        <span class="duration-main">${dur.label}</span>
+        <span class="duration-sub">${dur.days.toLocaleString()} days &nbsp;·&nbsp; ~${totalVisits} total visits</span>
+      </div>`;
+    customSection=`
+      <div class="contract-grid" style="margin-top:0">
+        <div class="contract-metric">
+          <div class="contract-metric-label">Per visit</div>
+          <div class="contract-metric-val teal">${fmt(price)}</div>
+          <div class="contract-metric-sub">${fmt(profit)} profit</div>
+        </div>
+        <div class="contract-metric">
+          <div class="contract-metric-label">Monthly</div>
+          <div class="contract-metric-val teal">${fmt(monthlyRevenue)}</div>
+          <div class="contract-metric-sub">${fmt(monthlyProfit)} profit</div>
+        </div>
+        <div class="contract-metric">
+          <div class="contract-metric-label">Contract total</div>
+          <div class="contract-metric-val green">${fmt(customRevenue)}</div>
+          <div class="contract-metric-sub">${fmt(customProfit)} profit</div>
+        </div>
       </div>
+      <div class="contract-row"><span class="dl">Contract start</span><span class="dv">${dur.start.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div>
+      <div class="contract-row"><span class="dl">Contract end</span><span class="dv">${dur.end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div>
+      <div class="contract-row"><span class="dl">Duration</span><span class="dv">${dur.label}</span></div>
+      <div class="contract-row"><span class="dl">Visits per month</span><span class="dv">${visits} (${freqShort})</span></div>
+      <div class="contract-row"><span class="dl">Estimated total visits</span><span class="dv">~${totalVisits}</span></div>
+      <div class="contract-row"><span class="dl">Total contract revenue</span><span class="dv green">${fmt(customRevenue)}</span></div>
+      <div class="contract-row highlight"><span class="dl">Total contract profit</span><span class="dv">${fmt(customProfit)}</span></div>`;
+  } else {
+    customSection=`
       <div class="contract-grid">
         <div class="contract-metric">
           <div class="contract-metric-label">Per visit</div>
@@ -199,8 +268,82 @@ function contractBlock(price, profit, freqDisc) {
       <div class="contract-row"><span class="dl">Monthly revenue</span><span class="dv green">${fmt(monthlyRevenue)}</span></div>
       <div class="contract-row"><span class="dl">Monthly profit</span><span class="dv green">${fmt(monthlyProfit)}</span></div>
       <div class="contract-row"><span class="dl">Annual revenue</span><span class="dv green">${fmt(annualRevenue)}</span></div>
-      <div class="contract-row highlight"><span class="dl">Annual profit</span><span class="dv">${fmt(annualProfit)}</span></div>
+      <div class="contract-row highlight"><span class="dl">Annual profit</span><span class="dv">${fmt(annualProfit)}</span></div>`;
+  }
+
+  return `
+    <div class="contract-card">
+      <div class="contract-header">
+        <div class="contract-header-title">Contract value — ${freqShort}</div>
+        <div class="contract-header-badge">${visitsLabel}</div>
+      </div>
+      <div class="date-row">
+        <div class="date-field">
+          <span class="date-label">Contract start</span>
+          <input type="date" id="cstart" value="${todayISO}" oninput="recalcContract()" />
+        </div>
+        <div class="date-field">
+          <span class="date-label">Contract end</span>
+          <input type="date" id="cend" value="${endISO}" oninput="recalcContract()" />
+        </div>
+      </div>
+      ${durationBar}
+      ${customSection}
     </div>`;
+}
+
+// store last price/profit for re-rendering contract on date change
+let _lastPrice=0,_lastProfit=0,_lastFreq=0;
+
+function recalcContract(){
+  if(_lastFreq===0) return;
+  const card=document.querySelector('.contract-card');
+  if(!card) return;
+  const dur=getDuration();
+  const visits=VISITS_PER_MONTH[_lastFreq];
+  const freqShort=FREQ_SHORT[_lastFreq];
+  const monthlyRevenue=_lastPrice*visits;
+  const monthlyProfit=_lastProfit*visits;
+  const visitsLabel=visits===1?'1 visit/month':visits+' visits/month';
+
+  // update header badge
+  card.querySelector('.contract-header-badge').textContent=visitsLabel;
+
+  // update duration bar and custom section
+  const existingBar=card.querySelector('.duration-bar');
+  if(existingBar) existingBar.remove();
+
+  // remove old rows and grid (everything after date-row)
+  const dateRow=card.querySelector('.date-row');
+  let next=dateRow.nextElementSibling;
+  while(next){const tmp=next.nextElementSibling;next.remove();next=tmp;}
+
+  if(dur){
+    const totalVisits=Math.round((dur.months*visits)+(dur.remDays/30*visits));
+    const customRevenue=_lastPrice*totalVisits;
+    const customProfit=_lastProfit*totalVisits;
+
+    const barDiv=document.createElement('div');
+    barDiv.className='duration-bar';
+    barDiv.innerHTML=`<span class="duration-main">${dur.label}</span><span class="duration-sub">${dur.days.toLocaleString()} days &nbsp;·&nbsp; ~${totalVisits} total visits</span>`;
+    dateRow.after(barDiv);
+
+    const contentDiv=document.createElement('div');
+    contentDiv.innerHTML=`
+      <div class="contract-grid" style="margin-top:0">
+        <div class="contract-metric"><div class="contract-metric-label">Per visit</div><div class="contract-metric-val teal">${fmt(_lastPrice)}</div><div class="contract-metric-sub">${fmt(_lastProfit)} profit</div></div>
+        <div class="contract-metric"><div class="contract-metric-label">Monthly</div><div class="contract-metric-val teal">${fmt(monthlyRevenue)}</div><div class="contract-metric-sub">${fmt(monthlyProfit)} profit</div></div>
+        <div class="contract-metric"><div class="contract-metric-label">Contract total</div><div class="contract-metric-val green">${fmt(customRevenue)}</div><div class="contract-metric-sub">${fmt(customProfit)} profit</div></div>
+      </div>
+      <div class="contract-row"><span class="dl">Contract start</span><span class="dv">${dur.start.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div>
+      <div class="contract-row"><span class="dl">Contract end</span><span class="dv">${dur.end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div>
+      <div class="contract-row"><span class="dl">Duration</span><span class="dv">${dur.label}</span></div>
+      <div class="contract-row"><span class="dl">Visits per month</span><span class="dv">${visits} (${freqShort})</span></div>
+      <div class="contract-row"><span class="dl">Estimated total visits</span><span class="dv">~${totalVisits}</span></div>
+      <div class="contract-row"><span class="dl">Total contract revenue</span><span class="dv green">${fmt(customRevenue)}</span></div>
+      <div class="contract-row highlight"><span class="dl">Total contract profit</span><span class="dv">${fmt(customProfit)}</span></div>`;
+    barDiv.after(contentDiv);
+  }
 }
 
 function calc(){
@@ -229,6 +372,9 @@ function calc(){
   const svLabel={regular:"Standard Regular",deep:"Deep Clean",quarterly:"Quarterly Deep"}[sv];
   const spLabel=document.getElementById('space').options[document.getElementById('space').selectedIndex].text;
   const staffLabel=s===1?"1 cleaner":s+" cleaners";
+
+  _lastPrice=price;_lastProfit=profit;_lastFreq=freqDisc;
+
   out.innerHTML=`
     <div class="result-grid">
       <div class="metric"><div class="metric-label">Estimated price</div><div class="metric-val teal">${fmt(price)}</div>${freqDisc>0?`<div class="metric-note">${freqDisc}% discount applied</div>`:''} ${isMin?'<div class="metric-note">Min charge applied</div>':''}</div>
@@ -260,7 +406,7 @@ function calc(){
         ${isMin?'<span class="badge" style="background:#FDF6E3;color:#854F0B">Minimum charge applied</span>':''}
       </div>
     </div>
-    ${contractBlock(price, profit, freqDisc)}`;
+    ${contractBlock(price,profit,freqDisc)}`;
 }
 document.getElementById('sqft').addEventListener('input',calc);
 document.getElementById('space').addEventListener('change',calc);
