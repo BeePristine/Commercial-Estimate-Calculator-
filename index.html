@@ -88,6 +88,13 @@ input[type=number]:focus,select:focus,input[type=date]:focus{border-color:#2A9D8
 .time-reset{background:none;border:0.5px solid #D1D5DB;border-radius:8px;padding:7px 12px;font-family:'Poppins',sans-serif;font-size:12px;color:#6B7280;cursor:pointer;white-space:nowrap}
 .time-reset:hover{border-color:#2A9D8F;color:#2A9D8F}
 
+/* Tax section */
+.tax-section{margin-top:10px;padding:10px 14px;background:#f0faf8;border-radius:10px;border:0.5px solid #A8DBC8}
+.tax-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px}
+.tax-row.total-with-tax{font-size:15px;font-weight:600;color:#0F6E56;padding-top:8px;border-top:0.5px solid #A8DBC8;margin-top:4px}
+.tax-label{color:#6B7280}
+.tax-val{font-weight:500;color:#0D1B2A}
+
 @media(max-width:520px){
   .result-grid{grid-template-columns:1fr 1fr}
   .result-grid .metric:last-child{grid-column:1/-1}
@@ -422,6 +429,9 @@ function calc(){
   const totalCost=laborCost+supplies;
   const profit=price-totalCost;
   const margin=Math.round((profit/price)*100);
+  const TAX_RATE=0.0825;
+  const taxAmt=price*TAX_RATE;
+  const priceWithTax=price+taxAmt;
   const svLabel={regular:"Standard Regular",deep:"Deep Clean",quarterly:"Quarterly Deep"}[sv];
   const spLabel=document.getElementById('space').options[document.getElementById('space').selectedIndex].text;
   const staffLabel=s===1?"1 cleaner":s+" cleaners";
@@ -437,7 +447,7 @@ function calc(){
 
   out.innerHTML=`
     <div class="result-grid">
-      <div class="metric"><div class="metric-label">Estimated price</div><div class="metric-val teal">${fmt(price)}</div>${freqDisc>0?`<div class="metric-note">${freqDisc}% discount applied</div>`:''} ${isMin?'<div class="metric-note">Min charge applied</div>':''}</div>
+      <div class="metric"><div class="metric-label">Estimated price</div><div class="metric-val teal">${fmt(price)}</div><div class="metric-note">+ $${taxAmt.toFixed(2)} tax = ${fmt(priceWithTax)}</div></div>
       <div class="metric"><div class="metric-label">Estimated time</div><div class="metric-val">${fmtTime(hrs)}</div><div class="metric-note">${staffLabel}</div></div>
       <div class="metric"><div class="metric-label">Your profit</div><div class="metric-val ${margin>=40?'teal':'amber'}">${fmt(profit)}</div><div class="metric-note">${margin}% margin</div></div>
     </div>
@@ -448,7 +458,12 @@ function calc(){
       ${isMin?`<div class="detail-row"><span class="dl">Minimum charge applied</span><span class="dv amber">${fmt(minC)}</span></div>`:''}
       <div class="detail-row"><span class="dl">Full price</span><span class="dv">${fmt(basePrice)}</span></div>
       ${freqDisc>0?`<div class="detail-row"><span class="dl">Frequency discount (${freqLabel})</span><span class="dv" style="color:#0F6E56">− ${fmt(discountAmt)}</span></div>`:''}
-      <div class="detail-row"><span class="dl">Final price</span><span class="dv green" style="font-size:15px">${fmt(price)}</span></div>
+      <div class="detail-row"><span class="dl">Price before tax</span><span class="dv green" style="font-size:15px">${fmt(price)}</span></div>
+      <div class="tax-section">
+        <div class="tax-row"><span class="tax-label">Price before tax</span><span class="tax-val">${fmt(price)}</span></div>
+        <div class="tax-row"><span class="tax-label">Sales tax (8.25%)</span><span class="tax-val">+ $${taxAmt.toFixed(2)}</span></div>
+        <div class="tax-row total-with-tax"><span>Total with tax</span><span>${fmt(priceWithTax)}</span></div>
+      </div>
       <div class="divider"></div>
       <div class="detail-row"><span class="dl">Booking frequency</span><span class="dv">${freqLabel}</span></div>
       <div class="detail-row"><span class="dl">Staff assigned</span><span class="dv">${staffLabel} · $${combinedRate.toFixed(2)}/hr combined</span></div>
