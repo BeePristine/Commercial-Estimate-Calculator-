@@ -15,6 +15,7 @@ body{font-family:'Poppins',sans-serif;background:#f4f6f9;min-height:100vh;paddin
 .header-title{font-size:28px;font-weight:600;color:#fff;margin-bottom:4px}
 .header-sub{font-size:14px;color:#A0B4C8}
 .form-card{background:#fff;border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;border:0.5px solid #E0E4EA;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.form-title{font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
 label{font-size:12px;font-weight:500;color:#6B7280;text-transform:uppercase;letter-spacing:.06em}
@@ -43,6 +44,14 @@ input[type=number]:focus,select:focus,input[type=date]:focus{border-color:#2A9D8
 .badge-red{background:#FDECEA;color:#A32D2D}
 .badge-teal{background:#D4EEEC;color:#0F6E56}
 
+/* Labor card */
+.labor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:4px}
+.labor-field{display:flex;flex-direction:column;gap:5px}
+.labor-input-wrap{position:relative;display:flex;align-items:center}
+.labor-input-wrap span{position:absolute;left:12px;font-size:14px;color:#6B7280;font-weight:500}
+.labor-input-wrap input{padding-left:26px}
+.labor-note{font-size:11px;color:#9CA3AF;margin-top:3px}
+
 /* Contract card */
 .contract-card{background:#fff;border:0.5px solid #E0E4EA;border-radius:16px;padding:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-top:1.25rem}
 .contract-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:0.5px solid #E0E4EA}
@@ -66,10 +75,18 @@ input[type=number]:focus,select:focus,input[type=date]:focus{border-color:#2A9D8
 .contract-row.highlight{background:#f0faf8;margin:0 -1.25rem;padding:10px 1.25rem;border-radius:0 0 12px 12px;border-bottom:none}
 .contract-row.highlight .dl{color:#0D1B2A;font-weight:500}
 .contract-row.highlight .dv{color:#0F6E56;font-size:15px}
-
 .placeholder{text-align:center;padding:3rem 1rem;color:#9CA3AF;font-size:14px;background:#fff;border:0.5px solid #E0E4EA;border-radius:16px}
 .footer{text-align:center;margin-top:1.5rem;font-size:12px;color:#9CA3AF}
 .footer strong{color:#6B7280}
+.cleaner-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #F3F4F6;font-size:13px}
+.cleaner-row:last-of-type{border-bottom:none}
+.time-override-wrap{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 14px;background:#f4f6f9;border-radius:10px}
+.time-override-wrap label{font-size:12px;font-weight:500;color:#6B7280;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;margin:0}
+.time-override-wrap input{width:80px;padding:7px 10px;border:0.5px solid #D1D5DB;border-radius:8px;font-family:'Poppins',sans-serif;font-size:14px;color:#0D1B2A;background:#fff;outline:none;text-align:center}
+.time-override-wrap input:focus{border-color:#2A9D8F;box-shadow:0 0 0 3px rgba(42,157,143,0.12)}
+.time-override-wrap span{font-size:12px;color:#9CA3AF}
+.time-reset{background:none;border:0.5px solid #D1D5DB;border-radius:8px;padding:7px 12px;font-family:'Poppins',sans-serif;font-size:12px;color:#6B7280;cursor:pointer;white-space:nowrap}
+.time-reset:hover{border-color:#2A9D8F;color:#2A9D8F}
 
 @media(max-width:520px){
   .result-grid{grid-template-columns:1fr 1fr}
@@ -131,6 +148,19 @@ input[type=number]:focus,select:focus,input[type=date]:focus{border-color:#2A9D8
         </select>
       </div>
     </div>
+    <div class="time-override-wrap" id="time-override-row" style="display:none;">
+      <label>Est. hours</label>
+      <input type="number" id="time-override" min="0.5" max="99" step="0.25" oninput="onTimeChange()" placeholder="0.00">
+      <span>hrs (auto-calculated · edit to override)</span>
+      <button class="time-reset" onclick="resetTime()">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- LABOR RATE CARD -->
+  <div class="form-card" id="labor-card" style="display:none;">
+    <div class="form-title">Labor Rate Per Cleaner</div>
+    <div id="labor-grid" class="labor-grid"></div>
+    <div style="margin-top:10px;font-size:12px;color:#9CA3AF;">Rates update automatically when staff count changes. Edit each cleaner individually.</div>
   </div>
 
   <div id="output">
@@ -156,7 +186,38 @@ function staff(sq){return sq<1500?1:sq<3000?2:3}
 function fmtTime(h){const hr=Math.floor(h),mn=Math.round((h-hr)*60);if(!mn)return hr+"h";if(!hr)return mn+"min";return hr+"h "+mn+"min"}
 function fmt(n){return "$"+Math.round(n).toLocaleString()}
 
-// set today as default start date, +12 months as default end date
+// ── LABOR RATE FUNCTIONS ──────────────────────────────────
+function updateLaborInputs(s){
+  const card=document.getElementById('labor-card');
+  const grid=document.getElementById('labor-grid');
+  if(!card||!grid) return;
+  card.style.display='block';
+  // save existing values
+  const existing={};
+  for(let i=1;i<=4;i++){const el=document.getElementById('lrate'+i);if(el) existing[i]=parseFloat(el.value)||26.50;}
+  grid.innerHTML='';
+  for(let i=1;i<=s;i++){
+    const val=(existing[i]||26.50).toFixed(2);
+    const div=document.createElement('div');
+    div.className='labor-field';
+    div.innerHTML=`<label>Cleaner ${i}</label><div class="labor-input-wrap"><span>$</span><input type="number" id="lrate${i}" value="${val}" min="10" max="100" step="0.50" oninput="calc()"></div><div class="labor-note">per hour</div>`;
+    grid.appendChild(div);
+  }
+}
+
+function getLaborRates(s){
+  let combined=0;
+  const details=[];
+  for(let i=1;i<=s;i++){
+    const el=document.getElementById('lrate'+i);
+    const rate=el?parseFloat(el.value)||26.50:26.50;
+    combined+=rate;
+    details.push(rate);
+  }
+  return{combined,details};
+}
+
+// ── DATE / CONTRACT FUNCTIONS ─────────────────────────────
 function initDates(){
   const today=new Date();
   const end=new Date(today);
@@ -180,7 +241,6 @@ function getDuration(){
   const diffMonths=(end.getFullYear()-start.getFullYear())*12+(end.getMonth()-start.getMonth())+(end.getDate()>=start.getDate()?0:-1);
   const diffWeeks=Math.floor(diffDays/7);
   const remDays=diffDays%7;
-  // human readable
   const yrs=Math.floor(diffMonths/12);
   const mos=diffMonths%12;
   let label='';
@@ -188,7 +248,7 @@ function getDuration(){
   if(yrs>0&&mos>0) label+=' ';
   if(mos>0) label+=mos+(mos===1?' month':' months');
   if(!label) label=diffDays+' days';
-  return {days:diffDays,months:diffMonths,weeks:diffWeeks,remDays,label,start,end};
+  return{days:diffDays,months:diffMonths,weeks:diffWeeks,remDays,label,start,end};
 }
 
 function contractBlock(price,profit,freqDisc){
@@ -200,43 +260,23 @@ function contractBlock(price,profit,freqDisc){
   const annualRevenue=monthlyRevenue*12;
   const annualProfit=monthlyProfit*12;
   const visitsLabel=visits===1?'1 visit/month':visits+' visits/month';
-
-  // build date section — always shown, dates pre-filled
   const todayISO=new Date().toISOString().split('T')[0];
   const endDefault=new Date();
   endDefault.setFullYear(endDefault.getFullYear()+1);
   const endISO=endDefault.toISOString().split('T')[0];
-
   const dur=getDuration();
   let durationBar='';
   let customSection='';
-
   if(dur){
     const totalVisits=Math.round((dur.months*visits)+(dur.remDays/30*visits));
     const customRevenue=price*totalVisits;
     const customProfit=profit*totalVisits;
-    durationBar=`
-      <div class="duration-bar">
-        <span class="duration-main">${dur.label}</span>
-        <span class="duration-sub">${dur.days.toLocaleString()} days &nbsp;·&nbsp; ~${totalVisits} total visits</span>
-      </div>`;
+    durationBar=`<div class="duration-bar"><span class="duration-main">${dur.label}</span><span class="duration-sub">${dur.days.toLocaleString()} days &nbsp;·&nbsp; ~${totalVisits} total visits</span></div>`;
     customSection=`
       <div class="contract-grid" style="margin-top:0">
-        <div class="contract-metric">
-          <div class="contract-metric-label">Per visit</div>
-          <div class="contract-metric-val teal">${fmt(price)}</div>
-          <div class="contract-metric-sub">${fmt(profit)} profit</div>
-        </div>
-        <div class="contract-metric">
-          <div class="contract-metric-label">Monthly</div>
-          <div class="contract-metric-val teal">${fmt(monthlyRevenue)}</div>
-          <div class="contract-metric-sub">${fmt(monthlyProfit)} profit</div>
-        </div>
-        <div class="contract-metric">
-          <div class="contract-metric-label">Contract total</div>
-          <div class="contract-metric-val green">${fmt(customRevenue)}</div>
-          <div class="contract-metric-sub">${fmt(customProfit)} profit</div>
-        </div>
+        <div class="contract-metric"><div class="contract-metric-label">Per visit</div><div class="contract-metric-val teal">${fmt(price)}</div><div class="contract-metric-sub">${fmt(profit)} profit</div></div>
+        <div class="contract-metric"><div class="contract-metric-label">Monthly</div><div class="contract-metric-val teal">${fmt(monthlyRevenue)}</div><div class="contract-metric-sub">${fmt(monthlyProfit)} profit</div></div>
+        <div class="contract-metric"><div class="contract-metric-label">Contract total</div><div class="contract-metric-val green">${fmt(customRevenue)}</div><div class="contract-metric-sub">${fmt(customProfit)} profit</div></div>
       </div>
       <div class="contract-row"><span class="dl">Contract start</span><span class="dv">${dur.start.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div>
       <div class="contract-row"><span class="dl">Contract end</span><span class="dv">${dur.end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div>
@@ -248,21 +288,9 @@ function contractBlock(price,profit,freqDisc){
   } else {
     customSection=`
       <div class="contract-grid">
-        <div class="contract-metric">
-          <div class="contract-metric-label">Per visit</div>
-          <div class="contract-metric-val teal">${fmt(price)}</div>
-          <div class="contract-metric-sub">${fmt(profit)} profit</div>
-        </div>
-        <div class="contract-metric">
-          <div class="contract-metric-label">Monthly</div>
-          <div class="contract-metric-val teal">${fmt(monthlyRevenue)}</div>
-          <div class="contract-metric-sub">${fmt(monthlyProfit)} profit</div>
-        </div>
-        <div class="contract-metric">
-          <div class="contract-metric-label">Annual</div>
-          <div class="contract-metric-val green">${fmt(annualRevenue)}</div>
-          <div class="contract-metric-sub">${fmt(annualProfit)} profit</div>
-        </div>
+        <div class="contract-metric"><div class="contract-metric-label">Per visit</div><div class="contract-metric-val teal">${fmt(price)}</div><div class="contract-metric-sub">${fmt(profit)} profit</div></div>
+        <div class="contract-metric"><div class="contract-metric-label">Monthly</div><div class="contract-metric-val teal">${fmt(monthlyRevenue)}</div><div class="contract-metric-sub">${fmt(monthlyProfit)} profit</div></div>
+        <div class="contract-metric"><div class="contract-metric-label">Annual</div><div class="contract-metric-val green">${fmt(annualRevenue)}</div><div class="contract-metric-sub">${fmt(annualProfit)} profit</div></div>
       </div>
       <div class="contract-row"><span class="dl">Visits per month</span><span class="dv">${visits}</span></div>
       <div class="contract-row"><span class="dl">Monthly revenue</span><span class="dv green">${fmt(monthlyRevenue)}</span></div>
@@ -270,7 +298,6 @@ function contractBlock(price,profit,freqDisc){
       <div class="contract-row"><span class="dl">Annual revenue</span><span class="dv green">${fmt(annualRevenue)}</span></div>
       <div class="contract-row highlight"><span class="dl">Annual profit</span><span class="dv">${fmt(annualProfit)}</span></div>`;
   }
-
   return `
     <div class="contract-card">
       <div class="contract-header">
@@ -278,21 +305,14 @@ function contractBlock(price,profit,freqDisc){
         <div class="contract-header-badge">${visitsLabel}</div>
       </div>
       <div class="date-row">
-        <div class="date-field">
-          <span class="date-label">Contract start</span>
-          <input type="date" id="cstart" value="${todayISO}" oninput="recalcContract()" />
-        </div>
-        <div class="date-field">
-          <span class="date-label">Contract end</span>
-          <input type="date" id="cend" value="${endISO}" oninput="recalcContract()" />
-        </div>
+        <div class="date-field"><span class="date-label">Contract start</span><input type="date" id="cstart" value="${todayISO}" oninput="recalcContract()" /></div>
+        <div class="date-field"><span class="date-label">Contract end</span><input type="date" id="cend" value="${endISO}" oninput="recalcContract()" /></div>
       </div>
       ${durationBar}
       ${customSection}
     </div>`;
 }
 
-// store last price/profit for re-rendering contract on date change
 let _lastPrice=0,_lastProfit=0,_lastFreq=0;
 
 function recalcContract(){
@@ -305,29 +325,20 @@ function recalcContract(){
   const monthlyRevenue=_lastPrice*visits;
   const monthlyProfit=_lastProfit*visits;
   const visitsLabel=visits===1?'1 visit/month':visits+' visits/month';
-
-  // update header badge
   card.querySelector('.contract-header-badge').textContent=visitsLabel;
-
-  // update duration bar and custom section
   const existingBar=card.querySelector('.duration-bar');
   if(existingBar) existingBar.remove();
-
-  // remove old rows and grid (everything after date-row)
   const dateRow=card.querySelector('.date-row');
   let next=dateRow.nextElementSibling;
   while(next){const tmp=next.nextElementSibling;next.remove();next=tmp;}
-
   if(dur){
     const totalVisits=Math.round((dur.months*visits)+(dur.remDays/30*visits));
     const customRevenue=_lastPrice*totalVisits;
     const customProfit=_lastProfit*totalVisits;
-
     const barDiv=document.createElement('div');
     barDiv.className='duration-bar';
     barDiv.innerHTML=`<span class="duration-main">${dur.label}</span><span class="duration-sub">${dur.days.toLocaleString()} days &nbsp;·&nbsp; ~${totalVisits} total visits</span>`;
     dateRow.after(barDiv);
-
     const contentDiv=document.createElement('div');
     contentDiv.innerHTML=`
       <div class="contract-grid" style="margin-top:0">
@@ -346,6 +357,36 @@ function recalcContract(){
   }
 }
 
+// ── TIME OVERRIDE ────────────────────────────────────────────
+let _autoTime = 0; // stores the auto-calculated time
+let _manualTime = null; // null means use auto
+
+function resetTime() {
+  _manualTime = null;
+  const el = document.getElementById('time-override');
+  if (el) {
+    const h = Math.floor(_autoTime);
+    const m = Math.round((_autoTime - h) * 60);
+    el.value = h + (m > 0 ? '.' + Math.round(m/60*100) : '');
+    // show as decimal hours
+    el.value = _autoTime.toFixed(2);
+  }
+  calc();
+}
+
+function onTimeChange() {
+  const el = document.getElementById('time-override');
+  if (!el) return;
+  const val = parseFloat(el.value);
+  if (!isNaN(val) && val > 0) {
+    _manualTime = val;
+  } else {
+    _manualTime = null;
+  }
+  calc();
+}
+
+// ── MAIN CALC ─────────────────────────────────────────────
 function calc(){
   const sq=parseFloat(document.getElementById('sqft').value);
   const sp=document.getElementById('space').value;
@@ -363,8 +404,20 @@ function calc(){
   const isMin=raw<minC;
   const discountAmt=freqDisc>0?Math.round(basePrice*(freqDisc/100)):0;
   const price=basePrice-discountAmt;
-  const hrs=(sq/1000)*TIME[sv][s];
-  const laborCost=s*26.5*hrs;
+  _autoTime=(sq/1000)*TIME[sv][s];
+  const hrs=(_manualTime!==null)?_manualTime:_autoTime;
+
+  // show and populate time override field
+  const timeRow = document.getElementById('time-override-row');
+  const timeEl = document.getElementById('time-override');
+  if (timeRow) timeRow.style.display = 'flex';
+  if (timeEl && _manualTime === null) timeEl.value = _autoTime.toFixed(2);
+
+  // labor — use individual rates
+  updateLaborInputs(s);
+  const {combined:combinedRate, details:laborDetails}=getLaborRates(s);
+  const laborCost=combinedRate*hrs;
+
   const supplies=Math.round(sq*0.003+10);
   const totalCost=laborCost+supplies;
   const profit=price-totalCost;
@@ -374,6 +427,13 @@ function calc(){
   const staffLabel=s===1?"1 cleaner":s+" cleaners";
 
   _lastPrice=price;_lastProfit=profit;_lastFreq=freqDisc;
+
+  // build individual cleaner rows
+  const cleanerRows=laborDetails.map((rate,i)=>`
+    <div class="cleaner-row">
+      <span style="color:#6B7280">Cleaner ${i+1}</span>
+      <span style="font-weight:500">$${rate.toFixed(2)}/hr &nbsp;·&nbsp; $${(rate*hrs).toFixed(2)} this job</span>
+    </div>`).join('');
 
   out.innerHTML=`
     <div class="result-grid">
@@ -391,8 +451,9 @@ function calc(){
       <div class="detail-row"><span class="dl">Final price</span><span class="dv green" style="font-size:15px">${fmt(price)}</span></div>
       <div class="divider"></div>
       <div class="detail-row"><span class="dl">Booking frequency</span><span class="dv">${freqLabel}</span></div>
-      <div class="detail-row"><span class="dl">Staff assigned</span><span class="dv">${staffLabel} · $${(s*26.5).toFixed(2)}/hr combined</span></div>
+      <div class="detail-row"><span class="dl">Staff assigned</span><span class="dv">${staffLabel} · $${combinedRate.toFixed(2)}/hr combined</span></div>
       <div class="detail-row"><span class="dl">Estimated time</span><span class="dv">${fmtTime(hrs)}</span></div>
+      ${cleanerRows}
       <div class="detail-row"><span class="dl">Labor cost</span><span class="dv">${fmt(laborCost)}</span></div>
       <div class="detail-row"><span class="dl">Supplies estimate</span><span class="dv">${fmt(supplies)}</span></div>
       <div class="detail-row"><span class="dl">Total cost to you</span><span class="dv">${fmt(totalCost)}</span></div>
